@@ -11,8 +11,8 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.raduhs.simplereminder.work.PeriodicJobWorker
-import com.example.raduhs.simplereminder.work.data.Notification
-import com.example.raduhs.simplereminder.work.ui.NotificationAdapter
+import com.example.raduhs.simplereminder.data.Notification
+import com.example.raduhs.simplereminder.ui.NotificationAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.Calendar.*
@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
 
 
         fab.setOnClickListener { view ->
-//            scheduleNotification()
             enqueWorkers()
 
             Snackbar.make(view, "Worker scheduled", Snackbar.LENGTH_LONG).setAction("Action", null).show()
@@ -44,30 +43,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadData() {
         notifications.add(Notification(101, "Time to feed the fishes", 24, 12, 0))
-        notifications.add(Notification(101, "Time for sport", 24, 14, 0))
-        notifications.add(Notification(101, "Time to go for a walk", 24, 18, 0))
-    }
-
-    private fun scheduleNotification() {
-
-        enqueWorker("Time to feed the fishes", 24, calculateDelay(12, 0), 101)
-        enqueWorker("Time for sport", 24, calculateDelay(14, 0), 101)
-        enqueWorker("Time to go for a walk", 24, calculateDelay(18, 0), 102)
-
-    }
-
-    private fun enqueWorker(message: String, interval: Long, delay: Long, notificationId: Int) {
-        val myData = Data.Builder()
-                .putString("MESSAGE", message)
-                .putLong("INTERVAL", interval)
-                .putInt("ID", notificationId)
-                .build()
-
-        val work = OneTimeWorkRequest.Builder(PeriodicJobWorker::class.java)
-                .setInputData(myData)
-                .setInitialDelay(delay, TimeUnit.SECONDS)
-                .build()
-        WorkManager.getInstance().enqueue(work)
+        notifications.add(Notification(102, "Time for sport", 24, 14, 0))
+        notifications.add(Notification(103, "Time to go for a walk", 24, 18, 0))
     }
 
     private fun enqueWorkers() {
@@ -97,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         val delay = (cal.timeInMillis-Calendar.getInstance().timeInMillis)/1000
 
-        Log.d("TEST", "delay in minutes" + delay/60)
+        Log.d("TEST", "delay in hours" + delay/60/60)
 
         return delay
     }

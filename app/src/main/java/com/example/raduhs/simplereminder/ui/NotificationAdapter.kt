@@ -1,4 +1,4 @@
-package com.example.raduhs.simplereminder.work.ui
+package com.example.raduhs.simplereminder.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.raduhs.simplereminder.R
-import com.example.raduhs.simplereminder.work.data.Notification
+import com.example.raduhs.simplereminder.data.Notification
 
 class NotificationAdapter(val userList: ArrayList<Notification>) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
