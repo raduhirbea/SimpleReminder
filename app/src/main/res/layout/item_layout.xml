@@ -14,12 +14,14 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:id="@+id/message"
                 android:text="Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <TextView
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:text="12:00"

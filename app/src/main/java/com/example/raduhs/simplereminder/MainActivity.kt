@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         notifications.add(Notification(101, "Time to feed the fishes", 24, 12, 0))
         notifications.add(Notification(102, "Time for sport", 24, 14, 0))
         notifications.add(Notification(103, "Time to go for a walk", 24, 18, 0))
+        notifications.add(Notification(104, "Prepare for bed", 24, 23, 0))
     }
 
     private fun enqueWorkers() {

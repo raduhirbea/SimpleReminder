@@ -3,9 +3,12 @@ package com.example.raduhs.simplereminder.work
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import androidx.work.Worker
+import com.example.raduhs.simplereminder.MainActivity
 
 const val MESSAGE = "MESSAGE"
 const val ID = "ID"
@@ -46,12 +49,17 @@ class JobWorker : Worker() {
     private fun sendNotification() {
         val GROUP_KEY_NOTIFY = "group_key_notify"
 
+        val resultIntent = Intent(applicationContext, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
         val notification = Notification.Builder(applicationContext, channelID)
                 .setContentTitle("Notification")
                 .setContentText(inputData.getString(MESSAGE))
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .setChannelId(channelID)
                 .setGroup(GROUP_KEY_NOTIFY)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .build()
 
         notificationManager?.notify(inputData.getInt(ID, 0), notification)
