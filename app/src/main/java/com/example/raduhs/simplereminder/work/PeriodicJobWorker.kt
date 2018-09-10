@@ -17,6 +17,7 @@ class PeriodicJobWorker : Worker() {
 
         val compressionWork = PeriodicWorkRequest.Builder(JobWorker::class.java, inputData.getLong("INTERVAL", 0), TimeUnit.HOURS)
                 .setInputData(myData)
+                .addTag(inputData.getInt(ID, 0).toString())
                 .build()
         WorkManager.getInstance().enqueue(compressionWork)
 

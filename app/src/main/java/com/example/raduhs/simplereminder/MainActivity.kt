@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
 
         fab.setOnClickListener { view ->
-            enqueWorkers()
+//            enqueWorkers()
 
             Snackbar.make(view, "Worker scheduled", Snackbar.LENGTH_LONG).setAction("Action", null).show()
         }
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         notifications.add(Notification(104, "Prepare for bed", 24, 23, 0))
     }
 
-    private fun enqueWorkers() {
+   /* private fun enqueWorkers() {
         for (notification in notifications) {
             val myData = Data.Builder()
                     .putString("MESSAGE", notification.message)
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("TEST", "delay in hours" + delay/60/60)
 
         return delay
-    }
+    }*/
 
 
 }

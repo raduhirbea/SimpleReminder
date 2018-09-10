@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
         <LinearLayout
+            android:id="@+id/container"
             android:padding="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -28,6 +29,13 @@
                 android:id="@+id/txtTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <Switch
+                android:id="@+id/statusSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Switch" />
+
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
