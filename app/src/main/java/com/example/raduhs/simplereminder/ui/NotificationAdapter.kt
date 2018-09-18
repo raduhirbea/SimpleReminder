@@ -1,6 +1,7 @@
 package com.example.raduhs.simplereminder.ui
 
 import android.app.TimePickerDialog
+import android.arch.lifecycle.LifecycleOwner
 import android.content.Context
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
@@ -18,9 +19,9 @@ import com.example.raduhs.simplereminder.work.PeriodicJobWorker
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.arch.lifecycle.Observer
 
-
-class NotificationAdapter(val userList: ArrayList<Notification>) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
+class NotificationAdapter(val owner : LifecycleOwner, val userList: ArrayList<Notification>) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = userList[position]
@@ -36,14 +37,31 @@ class NotificationAdapter(val userList: ArrayList<Notification>) : RecyclerView.
             TimePickerDialog(holder.context, timeSetListener, notification.hour, notification.minute, true).show()
         }
 
-        holder?.statusSwitch?.isChecked = isWorkScheduled(notification.notificationId.toString())
+        WorkManager.getInstance()!!.getStatusesByTag(notification.notificationId.toString())
+                .observe(owner, Observer { workStatus ->
+                    if (workStatus != null) {
+                        var running = false
+                        for (ws in workStatus) {
+//                            Log.d("TEST", ws.id.toString())
+/*                            Log.d("TEST", ws.tags.toString())
+                            Log.d("TEST", ws.state.toString())*/
+
+                            running = !ws.state.isFinished
+                            Log.d("TEST", notification.notificationId.toString() + " running" + running)
+                            holder?.statusSwitch?.tag = true
+                            holder?.statusSwitch?.isChecked = running
+                            holder.container.setBackgroundColor(if (running) Color.GREEN else Color.RED)
+                            holder?.statusSwitch?.tag = false
+                        }
+                    }
+                })
 
 
-
+        holder?.statusSwitch?.tag = false
         holder?.statusSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            if (holder?.statusSwitch?.tag==true) return@setOnCheckedChangeListener
+
             holder.container.setBackgroundColor(if (isChecked) Color.GREEN else Color.RED)
-            val msg = if (isChecked) "ON" else "OFF"
-            Toast.makeText(holder.context, msg, Toast.LENGTH_SHORT).show()
 
             if (isChecked) {
                 enqueWorkers(notification)
@@ -52,23 +70,6 @@ class NotificationAdapter(val userList: ArrayList<Notification>) : RecyclerView.
             }
         }
     }
-
-    private fun isWorkScheduled(tag: String): Boolean {
-        Log.d("TEST", "tag" + tag)
-        val instance = WorkManager.getInstance() ?: return false
-        Log.d("TEST", "instance" + instance)
-        val statuses = instance.getStatusesByTag(tag)
-        Log.d("TEST", "statuses" + statuses)
-        if (statuses.value == null) return false
-        var running = false
-        for (workStatus in statuses.value!!) {
-            running = !workStatus.state.isFinished
-            Log.d("TEST", "running" + running)
-        }
-        return running
-
-    }
-
 
     private fun calculateTime(hour: Int, minute: Int): String {
         val cal = Calendar.getInstance()
@@ -107,6 +108,7 @@ class NotificationAdapter(val userList: ArrayList<Notification>) : RecyclerView.
 
             val work = OneTimeWorkRequest.Builder(PeriodicJobWorker::class.java)
                     .setInputData(myData)
+                    .addTag(notification.notificationId.toString())
                     .setInitialDelay(calculateDelay(notification.hour, notification.minute), TimeUnit.SECONDS)
                     .build()
             WorkManager.getInstance().enqueue(work)
